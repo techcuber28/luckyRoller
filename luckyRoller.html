@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucky Roller</title>
+    <style>
+        .cool-button {
+            display: inline-block;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            color: #ffffff;
+            background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .cool-button:hover {
+            background: linear-gradient(45deg, #5c0cad 0%, #1e64d8 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .cool-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(45deg, #4a098c 0%, #174ea6 100%);
+        }
+
+        .centered {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">Roll for lucky stuff:</h2>
+    <h2 id="result" style="position: absolute; top: 50px; left: 50%; transform: translateX(-50%); min-height: 60px;"></h2>
+    <br><br><br>
+    <div class="centered">
+        <button class="cool-button" onclick="roll()">Roll</button>
+    </div>
+<script>
+    function roll() {
+        let roll = Math.random();
+        let text = document.getElementById("result");
+
+        if(roll <= 1 && roll > 0.5) {
+            text.innerHTML = "Common 50%";
+            text.style.color = "gray";
+            text.style.fontSize = "24px";
+        } else if(roll <= 0.5 && roll > 0.25) {
+            text.innerHTML = "Uncommon 25%";
+            text.style.color = "green";
+            text.style.fontSize = "28px";
+        } else if(roll <= 0.25 && roll > 0.1) {
+            text.innerHTML = "Rare 15%";
+            text.style.color = "blue";
+            text.style.fontSize = "32px";
+        } else if(roll <= 0.1 && roll > 0.05) {
+            text.innerHTML = "Epic 5%";
+            text.style.color = "purple";
+            text.style.fontSize = "36px";
+        } else if(roll <= 0.05 && roll > 0.025) {
+            text.innerHTML = "Legendary 2.5%";
+            text.style.color = "goldenrod";
+            text.style.fontSize = "40px";
+        } else if(roll <= 0.025 && roll > 0.01) {
+            text.innerHTML = "Mythic 1.5%";
+            text.style.color = "red";
+            text.style.fontSize = "44px";
+        } else if(roll <= 0.01) {
+            text.innerHTML = "Unreal 1%";
+            text.style.color = "black";
+            text.style.fontSize = "48px";
+        }
+    }
+</script>
+
+</body>
+</html>
