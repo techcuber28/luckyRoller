@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lucky Roller Artifacts</title>
+
+<style>
+    body {
+        background-color: black;
+        color: white;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+    }
+
+    .back-button, .reset-button {
+        position: fixed;
+        top: 20px;
+        z-index: 1000;
+    }
+
+    .back-button { right: 20px; }
+    .reset-button { left: 20px; }
+
+    .cool-button {
+        padding: 15px 30px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: bold;
+        text-decoration: none;
+        color: white;
+        background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+    }
+
+    .cool-button:hover {
+        background: linear-gradient(45deg, #5c0cad 0%, #1e64d8 100%);
+    }
+
+    h1 {
+        text-align: center;
+        margin-top: 80px;
+    }
+
+    .artifact-container {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        margin: 60px auto;
+        flex-wrap: wrap;
+        max-width: 1200px;
+    }
+
+    .artifact-card {
+        background: #111;
+        border-radius: 16px;
+        padding: 25px;
+        width: 250px;
+        text-align: center;
+        box-shadow: 0 0 25px rgba(255,255,255,0.08);
+    }
+
+    .artifact-card img {
+        width: 150px;
+        filter: grayscale(100%);
+        transition: filter 0.4s ease;
+    }
+
+    .artifact-card img.unlocked {
+        filter: grayscale(0%);
+    }
+
+    .rarity { margin-bottom: 12px; }
+
+    .rarity[data-rarity="common"] { color: gray; }
+    .rarity[data-rarity="uncommon"] { color: green; }
+    .rarity[data-rarity="unreal"] { color: white; }
+
+    .progress-text {
+        margin: 10px 0;
+        font-size: 14px;
+    }
+
+    .progress-bar {
+        background: #333;
+        border-radius: 10px;
+        height: 14px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        background: linear-gradient(90deg,#6a11cb,#2575fc);
+        height: 100%;
+        width: 0%;
+        transition: width 0.4s ease;
+    }
+</style>
+</head>
+
+<body>
+
+<button class="cool-button reset-button" onclick="resetShards()">Reset Artifacts</button>
+<a href="luckyRoller.html" class="cool-button back-button">Back to Roller</a>
+
+<h1>Your Artifacts</h1>
+
+<div class="artifact-container">
+
+    <!-- Hotdog -->
+    <div class="artifact-card">
+        <img id="hotdogImage" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Hot_dog_with_mustard.png/1280px-Hot_dog_with_mustard.png">
+        <h2>Hotdog</h2>
+        <p class="rarity" data-rarity="common">Common Artifact</p>
+        <div class="progress-text" id="hotdogProgressText"></div>
+        <div class="progress-bar"><div class="progress-fill" id="hotdogProgressFill"></div></div>
+    </div>
+
+    <!-- Cookie -->
+    <div class="artifact-card">
+        <img id="cookieImage" src="https://www.thepalatablelife.com/wp-content/uploads/2025/03/classic-chocolate-chip-cookies-2-scaled.jpg">
+        <h2>Cookie</h2>
+        <p class="rarity" data-rarity="common">Common Artifact</p>
+        <div class="progress-text" id="cookieProgressText"></div>
+        <div class="progress-bar"><div class="progress-fill" id="cookieProgressFill"></div></div>
+    </div>
+
+    <!-- Burger -->
+    <div class="artifact-card">
+        <img id="burgerImage" src="https://www.allrecipes.com/thmb/5JVfA7MxfTUPfRerQMdF-nGKsLY=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/25473-the-perfect-basic-burger-DDMFS-4x3-56eaba3833fd4a26a82755bcd0be0c54.jpg">
+        <h2>Burger</h2>
+        <p class="rarity" data-rarity="common">Common Artifact</p>
+        <div class="progress-text" id="burgerProgressText"></div>
+        <div class="progress-bar"><div class="progress-fill" id="burgerProgressFill"></div></div>
+    </div>
+
+    <!-- Curry -->
+    <div class="artifact-card">
+        <img id="curryImage" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFO-b9SS6hKI1x0pdaWCeSp3TQdJfJIwE2uA&s">
+        <h2>Curry</h2>
+        <p class="rarity" data-rarity="uncommon">Uncommon Artifact</p>
+        <div class="progress-text" id="curryProgressText"></div>
+        <div class="progress-bar"><div class="progress-fill" id="curryProgressFill"></div></div>
+    </div>
+
+    <!-- SunnyD -->
+    <div class="artifact-card">
+        <img id="sunnydImage" src="https://www.jarams.com/wp-content/uploads/2020/03/SunnyD-2.jpg">
+        <h2>SunnyD</h2>
+        <p class="rarity" data-rarity="unreal">Unreal Artifact</p>
+        <div class="progress-text" id="sunnydProgressText"></div>
+        <div class="progress-bar"><div class="progress-fill" id="sunnydProgressFill"></div></div>
+    </div>
+
+</div>
+
+<script>
+const artifacts = [
+    { key: "hotdogShards", img: "hotdogImage", text: "hotdogProgressText", fill: "hotdogProgressFill", required: 100 },
+    { key: "cookieShards", img: "cookieImage", text: "cookieProgressText", fill: "cookieProgressFill", required: 200 },
+    { key: "burgerShards", img: "burgerImage", text: "burgerProgressText", fill: "burgerProgressFill", required: 250 },
+    { key: "curryShards", img: "curryImage", text: "curryProgressText", fill: "curryProgressFill", required: 150 },
+    { key: "sunnydShards", img: "sunnydImage", text: "sunnydProgressText", fill: "sunnydProgressFill", required: 100 }
+];
+
+function updateArtifacts() {
+    artifacts.forEach(a => {
+        const shards = parseInt(localStorage.getItem(a.key)) || 0;
+        const img = document.getElementById(a.img);
+        const text = document.getElementById(a.text);
+        const fill = document.getElementById(a.fill);
+
+        text.textContent = `${shards} / ${a.required} shards`;
+        fill.style.width = `${Math.min((shards / a.required) * 100, 100)}%`;
+
+        img.classList.toggle("unlocked", shards >= a.required);
+    });
+}
+
+function resetShards() {
+    if (confirm("Reset ALL artifact progress?")) {
+        localStorage.clear();
+        updateArtifacts();
+    }
+}
+
+updateArtifacts();
+</script>
+
+</body>
+</html>
