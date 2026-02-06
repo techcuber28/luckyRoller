@@ -1,104 +1,383 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lucky Roller</title>
-<style>
-    body { background-color: black; color: white; }
-    .artifacts-button { position: fixed; top: 20px; right: 20px; z-index: 1000; }
-    .cool-button {
-        display: inline-block; padding: 15px 30px; border: none; border-radius: 8px;
-        cursor: pointer; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        font-size: 18px; font-weight: bold; text-align: center; text-decoration: none;
-        color: #ffffff; background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.3s ease;
-    }
-    .cool-button:hover { background: linear-gradient(45deg, #5c0cad 0%, #1e64d8 100%); transform: translateY(-2px); }
-    .cool-button:active { transform: translateY(1px); box-shadow: 0 1px 5px rgba(0,0,0,0.2); background: linear-gradient(45deg, #4a098c 0%, #174ea6 100%); }
-    .centered { text-align: center; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucky Roller</title>
+    <!-- Confetti library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .artifacts-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .stats {
+            text-align: center;
+            margin: 80px 20px 20px;
+            font-size: 20px;
+            line-height: 1.4;
+        }
+
+        .event-box {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 999;
+            width: 300px;
+            padding: 12px 16px;
+            background: rgba(255, 215, 0, 0.12);
+            border: 2px solid #ffd700;
+            border-radius: 12px;
+            font-size: 16px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .event-box strong {
+            font-size: 18px;
+            color: #ffd700;
+        }
+
+        .cool-button {
+            display: inline-block;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            color: #ffffff;
+            background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .cool-button:hover {
+            background: linear-gradient(45deg, #5c0cad 0%, #1e64d8 100%);
+            transform: translateY(-2px);
+        }
+
+        .cool-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .cool-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .centered {
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        #result {
+            position: absolute;
+            top: 240px;
+            left: 50%;
+            transform: translateX(-50%);
+            min-height: 120px;
+            width: 90%;
+            max-width: 700px;
+            text-align: center;
+            line-height: 1.3;
+            pointer-events: none;
+        }
+    </style>
+    <script>
+        if (!localStorage.getItem("luckyRollerAccess")) {
+            const encodedPassword = "bm9kdW1taWVzYWxsb3dlZA==";
+            let answer = prompt("Enter the one-time access code to access the lucky roller:");
+            while (btoa(answer) !== encodedPassword) {
+                answer = prompt("Invalid access code. Try again:");
+            }
+            let name = prompt("Access granted! Let us know your name. This is a one-time prompt.");
+            localStorage.setItem("luckyRollerName", name);
+            localStorage.setItem("luckyRollerAccess", true);
+        }
+        alert("Welcome, " + localStorage.getItem("luckyRollerName"));
+    </script>
 </head>
+
 <body>
-<h1 style="text-align: center;">Roll for lucky stuff:</h1>
+    <h1 style="text-align: center; margin: 40px 0 20px;">Roll for lucky stuff!</h1>
 
-<a href="artifacts.html" class="cool-button artifacts-button">Artifacts</a>
+    <a href="artifacts.html" class="cool-button artifacts-button">Artifacts 🧪</a>
+    <a href="luckyRollerShop.html" class="cool-button" style="position: fixed; top: 70px; right: 20px; z-index: 1000;">Shop 🛒</a>
 
-<h2 id="result" style="position: absolute; top: 50px; left: 50%; transform: translateX(-50%); min-height: 60px;"></h2>
-<br><br><br>
-<div class="centered">
-    <button class="cool-button" onclick="roll()">Roll</button>
-</div>
+    <div class="stats" id="stats">
+        Total Rolls: 0<br>Best Luck: None yet!
+    </div>
+
+    <!-- SunnyD event -->
+    <div class="event-box" id="eventBox">
+        <strong>SunnyD Citrus Splash! 🌞🥤</strong><br>
+        Claim 5 FREE SunnyD shards every 24 hours!<br>
+        <button id="claimButton" class="cool-button" onclick="claimDailySunnyD()">Claim Now!</button>
+    </div>
+
+    <h2 id="result"></h2>
+
+    <div class="centered">
+        <button style="margin-top: 100px;" class="cool-button" onclick="roll()">Roll</button>
+    </div>
 
 <script>
-let effectInterval = null;
-let canRoll = true;
+    let effectInterval = null;
+    let canRoll = true;
 
-// Artifacts by rarity
-const commonArtifacts = [
-    { name: "Hotdog", key: "hotdogShards" },
-    { name: "Cookie", key: "cookieShards" },
-    { name: "Burger", key: "burgerShards" } // New common
-];
+    // Track rolls & best luck
+    let totalRolls = parseInt(localStorage.getItem("totalRolls")) || 0;
+    let bestLuck = localStorage.getItem("bestLuck") || "None yet!";
+    document.getElementById("stats").innerHTML = `Total Rolls: ${totalRolls}<br>Best Luck: ${bestLuck}`;
 
-const uncommonArtifacts = [
-    { name: "Curry", key: "curryShards" } // New uncommon
-];
+    function updateStats(newLuck) {
+        totalRolls++;
+        localStorage.setItem("totalRolls", totalRolls);
 
-function startGodlikeEffect(text) {
-    const blues = ["#e0f7ff","#b3e5ff","#80d4ff","#4fc3ff","#29b6f6","#1e88e5","#1565c0"];
-    let index = 0;
-    effectInterval = setInterval(() => { text.style.color = blues[index]; index = (index + 1) % blues.length; }, 150);
-}
+        const luckRanks = {
+            "Common": 1,
+            "Uncommon": 2,
+            "Rare": 3,
+            "Epic": 4,
+            "Legendary": 5,
+            "Mythic": 6,
+            "Unreal": 7,
+            "Godlike": 8,
+            "Alchemy": 9
+        };
 
-function startAlchemyEffect(text) {
-    const greens = ["#c8facc","#9be7a1","#6fdc7a","#43c653","#2e9e3f","#1f7a30","#145522"];
-    let index = 0;
-    effectInterval = setInterval(() => { text.style.color = greens[index]; index = (index + 1) % greens.length; }, 80);
-}
+        const currentRank = luckRanks[newLuck] || 0;
+        const bestRank = luckRanks[bestLuck.split(" ")[0]] || 0;
 
-function lockRolls(seconds) {
-    canRoll = false;
-    const button = document.querySelector("button");
-    button.disabled = true;
-    button.style.opacity = "0.6";
-    button.style.cursor = "not-allowed";
-    setTimeout(() => {
-        canRoll = true;
-        button.disabled = false;
-        button.style.opacity = "1";
-        button.style.cursor = "pointer";
-    }, seconds*1000);
-}
+        if (currentRank > bestRank) {
+            bestLuck = newLuck;
+            localStorage.setItem("bestLuck", bestLuck);
+        }
 
-function roll() {
-    if (!canRoll) return;
-    let roll = Math.random();
-    let text = document.getElementById("result");
-    if (effectInterval) { clearInterval(effectInterval); effectInterval = null; }
+        document.getElementById("stats").innerHTML = `Total Rolls: ${totalRolls}<br>Best Luck: ${bestLuck}`;
+    }
 
-    if (roll > 0.5) {
-        // Random common artifact
-        const artifact = commonArtifacts[Math.floor(Math.random() * commonArtifacts.length)];
-        text.innerHTML = `${artifact.name} (Common) 50%`;
-        text.style.color = "gray"; text.style.fontSize = "24px";
-        localStorage.setItem(artifact.key, (parseInt(localStorage.getItem(artifact.key)) || 0) + 1);
+    // Artifacts
+    const commonArtifacts = [
+        { name: "Hotdog", key: "hotdogShards" },
+        { name: "Cookie", key: "cookieShards" },
+        { name: "Burger", key: "burgerShards" }
+    ];
 
-    } else if (roll > 0.25) {
-        // Random uncommon artifact if any
-        const artifact = uncommonArtifacts[Math.floor(Math.random() * uncommonArtifacts.length)];
-        text.innerHTML = artifact ? `${artifact.name} (Uncommon) 25%` : "Uncommon 25%";
-        text.style.color = "green"; text.style.fontSize = "28px";
-        if (artifact) localStorage.setItem(artifact.key, (parseInt(localStorage.getItem(artifact.key)) || 0) + 1);
+    const uncommonArtifacts = [
+        { name: "Curry", key: "curryShards" }
+    ];
 
-    } else if (roll > 0.1) { text.innerHTML = "Rare 15%"; text.style.color = "blue"; text.style.fontSize = "32px"; }
-    else if (roll > 0.05) { text.innerHTML = "Epic 5%"; text.style.color = "purple"; text.style.fontSize = "36px"; }
-    else if (roll > 0.025) { text.innerHTML = "Legendary 2.5%"; text.style.color = "goldenrod"; text.style.fontSize = "40px"; }
-    else if (roll > 0.01) { text.innerHTML = "Mythic 1.5%"; text.style.color = "red"; text.style.fontSize = "44px"; }
-    else if (roll > 0.001) { text.innerHTML = "Unreal 0.9%"; text.style.color = "white"; text.style.fontSize = "48px"; lockRolls(3); }
-    else if (roll > 0.0001) { text.innerHTML = "Godlike 0.1%"; text.style.fontSize = "52px"; startGodlikeEffect(text); lockRolls(3); }
-    else { text.innerHTML = "Alchemy 0.01%"; text.style.fontSize = "60px"; startAlchemyEffect(text); lockRolls(3); }
-}
+    const unrealArtifacts = [
+        { name: "SunnyD", key: "sunnydShards" }
+    ];
+
+    function startGodlikeEffect(text) {
+        const blues = ["#e0f7ff", "#b3e5ff", "#80d4ff", "#4fc3ff", "#29b6f6", "#1e88e5", "#1565c0"];
+        let index = 0;
+        effectInterval = setInterval(() => {
+            text.style.color = blues[index];
+            index = (index + 1) % blues.length;
+        }, 150);
+    }
+
+    function startAlchemyEffect(text) {
+        const greens = ["#c8facc", "#9be7a1", "#6fdc7a", "#43c653", "#2e9e3f", "#1f7a30", "#145522"];
+        let index = 0;
+        effectInterval = setInterval(() => {
+            text.style.color = greens[index];
+            index = (index + 1) % greens.length;
+        }, 80);
+    }
+
+    function lockRolls(seconds) {
+        canRoll = false;
+        const button = document.querySelector("button:not(#claimButton)");
+        button.disabled = true;
+        button.style.opacity = "0.6";
+        button.style.cursor = "not-allowed";
+        setTimeout(() => {
+            canRoll = true;
+            button.disabled = false;
+            button.style.opacity = "1";
+            button.style.cursor = "pointer";
+        }, seconds * 1000);
+    }
+
+    function roll() {
+        if (!canRoll) return;
+
+        let rollValue = Math.random();
+        let text = document.getElementById("result");
+        let luckName = "Common";
+
+        if (effectInterval) {
+            clearInterval(effectInterval);
+            effectInterval = null;
+        }
+
+        if (rollValue > 0.5) {
+            // Common - shard OR credit
+            const artifact = commonArtifacts[Math.floor(Math.random() * commonArtifacts.length)];
+            text.innerHTML = `${artifact.name} (Common) 50%`;
+            text.style.color = "gray";
+            text.style.fontSize = "24px";
+
+            if (Math.random() < 0.5) {
+                localStorage.setItem(artifact.key, (parseInt(localStorage.getItem(artifact.key)) || 0) + 1);
+                text.innerHTML += "<br>Shard drop!";
+            } else {
+                let commonCredits = parseInt(localStorage.getItem("commonCredits") || "0") + 1;
+                localStorage.setItem("commonCredits", commonCredits);
+                text.innerHTML += "<br>+1 Common Credit!";
+            }
+
+            luckName = "Common";
+
+        } else if (rollValue > 0.25) {
+            // Uncommon - shard OR credit
+            const artifact = uncommonArtifacts[Math.floor(Math.random() * uncommonArtifacts.length)];
+            text.innerHTML = `${artifact.name} (Uncommon) 25%`;
+            text.style.color = "green";
+            text.style.fontSize = "28px";
+
+            if (Math.random() < 0.25) {
+                let uncommonCredits = parseInt(localStorage.getItem("uncommonCredits") || "0") + 1;
+                localStorage.setItem("uncommonCredits", uncommonCredits);
+                text.innerHTML += "<br>+1 Uncommon Credit!";
+            } else {
+                localStorage.setItem(artifact.key, (parseInt(localStorage.getItem(artifact.key)) || 0) + 1);
+                text.innerHTML += "<br>Shard drop!";
+            }
+
+            luckName = "Uncommon";
+
+        } else if (rollValue > 0.1) {
+            // Rare - credit only (no shard yet)
+            text.innerHTML = "Rare 15%";
+            text.style.color = "blue";
+            text.style.fontSize = "32px";
+
+            if (Math.random() < 0.15) {
+                let rareCredits = parseInt(localStorage.getItem("rareCredits") || "0") + 1;
+                localStorage.setItem("rareCredits", rareCredits);
+                text.innerHTML += "<br>+1 Rare Credit!";
+            }
+
+            luckName = "Rare";
+
+        } else if (rollValue > 0.05) {
+            text.innerHTML = "Epic 5%";
+            text.style.color = "purple";
+            text.style.fontSize = "36px";
+            luckName = "Epic";
+
+        } else if (rollValue > 0.025) {
+            text.innerHTML = "Legendary 2.5%";
+            text.style.color = "goldenrod";
+            text.style.fontSize = "40px";
+            luckName = "Legendary";
+
+        } else if (rollValue > 0.01) {
+            text.innerHTML = "Mythic 1.5%";
+            text.style.color = "red";
+            text.style.fontSize = "44px";
+            luckName = "Mythic";
+
+        } else if (rollValue > 0.001) {
+            const artifact = unrealArtifacts[Math.floor(Math.random() * unrealArtifacts.length)];
+            text.innerHTML = `${artifact.name} (Unreal) 0.9%`;
+            text.style.color = "white";
+            text.style.fontSize = "48px";
+            lockRolls(3);
+            localStorage.setItem(artifact.key, (parseInt(localStorage.getItem(artifact.key)) || 0) + 1);
+            luckName = "Unreal";
+            confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+
+        } else if (rollValue > 0.0001) {
+            text.innerHTML = "Godlike 0.1%";
+            text.style.fontSize = "52px";
+            startGodlikeEffect(text);
+            lockRolls(3);
+            luckName = "Godlike";
+            confetti({ particleCount: 400, spread: 100, origin: { y: 0.6 } });
+
+        } else {
+            text.innerHTML = "Alchemy 0.01%";
+            text.style.fontSize = "60px";
+            startAlchemyEffect(text);
+            lockRolls(3);
+            luckName = "Alchemy";
+            confetti({ particleCount: 1000, spread: 150, origin: { y: 0.6 } });
+        }
+
+        updateStats(luckName);
+    }
+
+    // Daily SunnyD Claim Event with 24-hour countdown
+    function claimDailySunnyD() {
+        const claimButton = document.getElementById("claimButton");
+        const now = Date.now();
+        const lastClaimTime = parseInt(localStorage.getItem("lastSunnyDClaimTime")) || 0;
+
+        localStorage.setItem("sunnydShards", (parseInt(localStorage.getItem("sunnydShards")) || 0) + 5);
+        localStorage.setItem("lastSunnyDClaimTime", now);
+        confetti({ particleCount: 80, spread: 60, origin: { y: 0.7 } });
+        alert("SunnyD Citrus Splash! x5 SunnyD shards claimed! 🌞🥤");
+
+        startCountdown(claimButton, now + 24 * 60 * 60 * 1000);
+    }
+
+    function startCountdown(button, endTime) {
+        function updateTimer() {
+            const remaining = endTime - Date.now();
+            if (remaining <= 0) {
+                button.disabled = false;
+                button.textContent = "Claim Now!";
+                return;
+            }
+
+            const hours = Math.floor(remaining / (1000 * 60 * 60));
+            const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+
+            button.textContent = `Next claim: ${hours}h ${minutes}m ${seconds}s`;
+            button.disabled = true;
+        }
+
+        updateTimer();
+        setInterval(updateTimer, 1000);
+    }
+
+    window.addEventListener("load", () => {
+        const claimButton = document.getElementById("claimButton");
+        const lastClaimTime = parseInt(localStorage.getItem("lastSunnyDClaimTime")) || 0;
+        const now = Date.now();
+
+        if (now - lastClaimTime < 24 * 60 * 60 * 1000) {
+            startCountdown(claimButton, lastClaimTime + 24 * 60 * 60 * 1000);
+        } else {
+            claimButton.disabled = false;
+            claimButton.textContent = "Claim Now!";
+        }
+    });
 </script>
 </body>
+
 </html>

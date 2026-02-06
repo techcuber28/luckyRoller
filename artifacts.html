@@ -73,11 +73,41 @@
         filter: grayscale(0%);
     }
 
-    .rarity { margin-bottom: 12px; }
+    .rarity { 
+        margin-bottom: 12px; 
+        font-weight: bold;
+    }
 
     .rarity[data-rarity="common"] { color: gray; }
     .rarity[data-rarity="uncommon"] { color: green; }
     .rarity[data-rarity="unreal"] { color: white; }
+    .rarity[data-rarity="godlike"] {
+        color: #e0f7ff;
+        animation: godlikeGlow 3s infinite alternate;
+    }
+    .rarity[data-rarity="alchemy"] {
+        color: #c8facc;
+        animation: alchemyGlow 2s infinite alternate;
+        text-shadow: 0 0 15px #43c653;
+    }
+
+    @keyframes godlikeGlow {
+        0% { color: #e0f7ff; text-shadow: 0 0 10px #e0f7ff; }
+        20% { color: #b3e5ff; text-shadow: 0 0 15px #b3e5ff; }
+        40% { color: #80d4ff; text-shadow: 0 0 20px #80d4ff; }
+        60% { color: #4fc3ff; text-shadow: 0 0 25px #4fc3ff; }
+        80% { color: #29b6f6; text-shadow: 0 0 30px #29b6f6; }
+        100% { color: #1e88e5; text-shadow: 0 0 35px #1e88e5; }
+    }
+
+    @keyframes alchemyGlow {
+        0% { color: #c8facc; text-shadow: 0 0 10px #c8facc; }
+        20% { color: #9be7a1; text-shadow: 0 0 15px #9be7a1; }
+        40% { color: #6fdc7a; text-shadow: 0 0 20px #6fdc7a; }
+        60% { color: #43c653; text-shadow: 0 0 25px #43c653; }
+        80% { color: #2e9e3f; text-shadow: 0 0 30px #2e9e3f; }
+        100% { color: #1f7a30; text-shadow: 0 0 35px #1f7a30; }
+    }
 
     .progress-text {
         margin: 10px 0;
@@ -102,7 +132,7 @@
 
 <body>
 
-<button class="cool-button reset-button" onclick="resetShards()">Reset Artifacts</button>
+<button class="cool-button reset-button" onclick="resetShards()">Reset Progress</button>
 <a href="luckyRoller.html" class="cool-button back-button">Back to Roller</a>
 
 <h1>Your Artifacts</h1>
@@ -120,7 +150,7 @@
 
     <!-- Cookie -->
     <div class="artifact-card">
-        <img id="cookieImage" src="https://www.thepalatablelife.com/wp-content/uploads/2025/03/classic-chocolate-chip-cookies-2-scaled.jpg">
+        <img id="cookieImage" src="https://www.dessertfortwo.com/wp-content/uploads/2023/04/Single-Serve-Chocolate-Chip-Cookie-5-540x720.jpg">
         <h2>Cookie</h2>
         <p class="rarity" data-rarity="common">Common Artifact</p>
         <div class="progress-text" id="cookieProgressText"></div>
@@ -154,15 +184,35 @@
         <div class="progress-bar"><div class="progress-fill" id="sunnydProgressFill"></div></div>
     </div>
 
+    <!-- Larry -->
+    <div class="artifact-card">
+        <img id="larryImage" src="https://i.redd.it/tsrsu7d774hf1.jpeg">
+        <h2>Larry</h2>
+        <p class="rarity" data-rarity="godlike">Godlike Artifact</p>
+        <div class="progress-text" id="larryProgressText"></div>
+        <div class="progress-bar"><div class="progress-fill" id="larryProgressFill"></div></div>
+    </div>
+
+    <!-- TON 618 -->
+    <div class="artifact-card">
+        <img id="ton618Image" src="https://upload.wikimedia.org/wikipedia/commons/c/c8/Ton618.png">
+        <h2>TON 618</h2>
+        <p class="rarity" data-rarity="alchemy">Alchemy Artifact</p>
+        <div class="progress-text" id="ton618ProgressText"></div>
+        <div class="progress-bar"><div class="progress-fill" id="ton618ProgressFill"></div></div>
+    </div>
+
 </div>
 
 <script>
 const artifacts = [
-    { key: "hotdogShards", img: "hotdogImage", text: "hotdogProgressText", fill: "hotdogProgressFill", required: 100 },
-    { key: "cookieShards", img: "cookieImage", text: "cookieProgressText", fill: "cookieProgressFill", required: 200 },
-    { key: "burgerShards", img: "burgerImage", text: "burgerProgressText", fill: "burgerProgressFill", required: 250 },
-    { key: "curryShards", img: "curryImage", text: "curryProgressText", fill: "curryProgressFill", required: 150 },
-    { key: "sunnydShards", img: "sunnydImage", text: "sunnydProgressText", fill: "sunnydProgressFill", required: 100 }
+    { key: "hotdogShards", img: "hotdogImage", text: "hotdogProgressText", fill: "hotdogProgressFill", required: 500 },
+    { key: "cookieShards", img: "cookieImage", text: "cookieProgressText", fill: "cookieProgressFill", required: 750 },
+    { key: "burgerShards", img: "burgerImage", text: "burgerProgressText", fill: "burgerProgressFill", required: 1000 },
+    { key: "curryShards", img: "curryImage", text: "curryProgressText", fill: "curryProgressFill", required: 300 },
+    { key: "sunnydShards", img: "sunnydImage", text: "sunnydProgressText", fill: "sunnydProgressFill", required: 250 },
+    { key: "larryShards", img: "larryImage", text: "larryProgressText", fill: "larryProgressFill", required: 500 },
+    { key: "ton618Shards", img: "ton618Image", text: "ton618ProgressText", fill: "ton618ProgressFill", required: 1000 }
 ];
 
 function updateArtifacts() {

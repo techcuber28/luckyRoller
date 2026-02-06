@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucky Roller Shop</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 40px 0 30px;
+            font-size: 36px;
+        }
+
+        .credits-display {
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .shop-container {
+            max-width: 700px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .trade-card {
+            background: #111;
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(255,255,255,0.08);
+            border: 1px solid #444;
+        }
+
+        .trade-card h3 {
+            margin: 0 0 15px;
+            font-size: 24px;
+        }
+
+        .trade-card p {
+            margin: 10px 0 20px;
+            font-size: 18px;
+        }
+
+        .cool-button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .cool-button:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(45deg, #5c0cad 0%, #1e64d8 100%);
+        }
+
+        .cool-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .success-msg {
+            margin-top: 15px;
+            font-size: 18px;
+            color: #00ff88;
+            min-height: 24px;
+        }
+    </style>
+</head>
+<body>
+
+<a href="luckyRoller.html" class="cool-button back-button">Back to Roller</a>
+
+<h1>Lucky Roller Shop 🛒</h1>
+
+<div class="credits-display" id="creditsDisplay">
+    Loading your credits...
+</div>
+
+<div class="shop-container">
+
+    <div class="trade-card">
+        <h3>Common → Uncommon</h3>
+        <p>Trade 10 Common Credits for 1 Uncommon Credit</p>
+        <button class="cool-button" onclick="trade('common', 10, 'uncommon', 1)">Trade Now!</button>
+        <div class="success-msg" id="msg-common"></div>
+    </div>
+
+    <div class="trade-card">
+        <h3>Uncommon → Rare</h3>
+        <p>Trade 10 Uncommon Credits for 1 Rare Credit</p>
+        <button class="cool-button" onclick="trade('uncommon', 10, 'rare', 1)">Trade Now!</button>
+        <div class="success-msg" id="msg-uncommon"></div>
+    </div>
+
+    <div class="trade-card">
+        <h3>SunnyD Shard</h3>
+        <p>1 SunnyD Shard 🍊🥤(20 Rare Credits)</p>
+        <button class="cool-button" onclick="trade('rare', 20, 'sunnydShards', 1, true)">Trade Now!</button>
+        <div class="success-msg" id="msg-rare"></div>
+    </div>
+
+</div>
+
+<script>
+function updateCreditsDisplay() {
+    const common = parseInt(localStorage.getItem("commonCredits") || "0");
+    const uncommon = parseInt(localStorage.getItem("uncommonCredits") || "0");
+    const rare = parseInt(localStorage.getItem("rareCredits") || "0");
+
+    document.getElementById("creditsDisplay").innerHTML = 
+        `Common Credits ⚪: ${common}<br>` +
+        `Uncommon Credits 🟢: ${uncommon}<br>` +
+        `Rare Credits 🔵: ${rare}`;
+}
+
+function trade(fromType, fromAmount, toType, toAmount, isShard = false) {
+    // Always use "Credits" suffix for cost (from), unless it's a shard trade (but we don't have shard costs yet)
+    let fromKey = fromType + "Credits";  // ← This line fixes it! We always want rareCredits here
+
+    let current = parseInt(localStorage.getItem(fromKey) || "0");
+
+    if (current < fromAmount) {
+        alert(`Not enough ${fromType} credits! Need ${fromAmount}, you have ${current}.`);
+        return;
+    }
+
+    // Subtract cost
+    localStorage.setItem(fromKey, current - fromAmount);
+
+    // Add reward
+    let toKey = toType;
+    if (!isShard) toKey += "Credits";  // Only add "Credits" if buying another credit type
+
+    let toCurrent = parseInt(localStorage.getItem(toKey) || "0");
+    localStorage.setItem(toKey, toCurrent + toAmount);
+
+    // Confetti + success message
+    confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+
+    const msgId = `msg-${fromType.toLowerCase()}`;
+    document.getElementById(msgId).innerHTML = `Success! +${toAmount} ${toType} ${isShard ? "shard" : "credit"}! 🎉`;
+
+    updateCreditsDisplay();
+
+    // Clear message after 4 seconds
+    setTimeout(() => {
+        document.getElementById(msgId).innerHTML = "";
+    }, 4000);
+}
+
+// Load credits when shop opens
+window.addEventListener("load", updateCreditsDisplay);
+</script>
+
+</body>
+</html>
