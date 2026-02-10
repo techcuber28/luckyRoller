@@ -232,7 +232,7 @@
     </div>
 
     <footer style="text-align: center; margin-top: 350px; font-size: 14px; color: #888;">
-        Version: BETA 6 | Last updated: 2/10/2026 | Made by Techcuber
+        Version: BETA 7 | Last updated: 2/10/2026 | Made by Techcuber
     </footer>
 
     <script>
@@ -403,7 +403,6 @@
 
                 if (Math.random() < 0.5) {
                     localStorage.setItem(artifact.key, (parseInt(localStorage.getItem(artifact.key)) || 0) + 1);
-                    text.innerHTML += "<br>Shard drop!";
                 } else {
                     let commonCredits = parseInt(localStorage.getItem("commonCredits") || "0") + 1;
                     localStorage.setItem("commonCredits", commonCredits);
@@ -423,7 +422,6 @@
                     text.innerHTML += "<br>+1 Uncommon Credit!";
                 } else {
                     localStorage.setItem(artifact.key, (parseInt(localStorage.getItem(artifact.key)) || 0) + 1);
-                    text.innerHTML += "<br>Shard drop!";
                 }
                 luckName = "Uncommon";
 
@@ -433,7 +431,6 @@
                 text.style.color = "blue";
                 text.style.fontSize = "22px";
                 localStorage.setItem(artifact.key, (parseInt(localStorage.getItem(artifact.key)) || 0) + 1);
-                text.innerHTML += "<br>Shard drop!";
                 luckName = "Rare";
 
             } else if (rollValue > 0.08) {
@@ -442,7 +439,6 @@
                 text.style.color = "purple";
                 text.style.fontSize = "24px";
                 localStorage.setItem(artifact.key, (parseInt(localStorage.getItem(artifact.key)) || 0) + 1);
-                text.innerHTML += "<br>Shard drop!";
                 luckName = "Epic";
 
             } else if (rollValue > 0.04) {
@@ -451,7 +447,6 @@
                 text.style.color = "goldenrod";
                 text.style.fontSize = "28px";
                 localStorage.setItem(artifact.key, (parseInt(localStorage.getItem(artifact.key)) || 0) + 1);
-                text.innerHTML += "<br>Shard drop!";
                 luckName = "Legendary";
 
             } else if (rollValue > 0.02) {
@@ -461,7 +456,6 @@
                 text.style.fontSize = "32px";
                 lockRolls(1);
                 localStorage.setItem(artifact.key, (parseInt(localStorage.getItem(artifact.key)) || 0) + 1);
-                text.innerHTML += "<br>Shard drop!";
                 luckName = "Mythic";
 
             } else if (rollValue > 0.001) {
