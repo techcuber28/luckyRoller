@@ -189,7 +189,7 @@
             Claim 5 FREE SunnyD shards every 24 hours!<br>
             <button id="claimButton" class="cool-button" onclick="claimDailySunnyD()">Claim Now!</button>
         </div>
-        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+        <br>
         <div class="event-box" style="border-color:#00ff1a; box-shadow:0 0 12px #00ff1a; color: limegreen">
             <strong>10 Minute Free Chest 📦</strong><br><br>
             <button id="simpleChestBtn" class="cool-button" onclick="claimChest('simple')">
@@ -219,7 +219,7 @@
     </div>
 
     <footer style="text-align: center; margin-top: 350px; font-size: 14px; color: #888;">
-        Version: BETA 3 | Last updated: 2/9/2026 | Made by Techcuber
+        Version: BETA 4 | Last updated: 2/10/2026 | Made by Techcuber
     </footer>
 
     <script>
@@ -446,6 +446,7 @@
                 text.innerHTML = `${artifact.name} (Mythic)`;
                 text.style.color = "red";
                 text.style.fontSize = "44px";
+                lockRolls(1);
                 localStorage.setItem(artifact.key, (parseInt(localStorage.getItem(artifact.key)) || 0) + 1);
                 text.innerHTML += "<br>Shard drop!";
                 luckName = "Mythic";
@@ -455,8 +456,10 @@
                 text.innerHTML = `${artifact.name} (Unreal) 0.9%`;
                 text.style.color = "white";
                 text.style.fontSize = "48px";
+                lockRolls(2);
                 localStorage.setItem(artifact.key, (parseInt(localStorage.getItem(artifact.key)) || 0) + 1);
                 luckName = "Unreal";
+
 
             } else if (rollValue > 0.0001) {
                 const artifact = godlikeArtifacts[Math.floor(Math.random() * godlikeArtifacts.length)];
