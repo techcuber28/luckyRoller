@@ -427,7 +427,7 @@
 
             } else if (rollValue > 0.15) {
                 const artifact = rareArtifacts[Math.floor(Math.random() * rareArtifacts.length)];
-                text.innerHTML = `${artifact.name} (Rare)`;
+                text.innerHTML = `${artifact.name} (Rare) 15%`;
                 text.style.color = "blue";
                 text.style.fontSize = "22px";
                 localStorage.setItem(artifact.key, (parseInt(localStorage.getItem(artifact.key)) || 0) + 1);
@@ -435,7 +435,7 @@
 
             } else if (rollValue > 0.08) {
                 const artifact = epicArtifacts[Math.floor(Math.random() * epicArtifacts.length)];
-                text.innerHTML = `${artifact.name} (Epic)`;
+                text.innerHTML = `${artifact.name} (Epic) 5%`;
                 text.style.color = "purple";
                 text.style.fontSize = "24px";
                 localStorage.setItem(artifact.key, (parseInt(localStorage.getItem(artifact.key)) || 0) + 1);
@@ -443,7 +443,7 @@
 
             } else if (rollValue > 0.04) {
                 const artifact = legendaryArtifacts[Math.floor(Math.random() * legendaryArtifacts.length)];
-                text.innerHTML = `${artifact.name} (Legendary)`;
+                text.innerHTML = `${artifact.name} (Legendary) 2.5%`;
                 text.style.color = "goldenrod";
                 text.style.fontSize = "28px";
                 localStorage.setItem(artifact.key, (parseInt(localStorage.getItem(artifact.key)) || 0) + 1);
@@ -451,7 +451,7 @@
 
             } else if (rollValue > 0.02) {
                 const artifact = mythicArtifacts[Math.floor(Math.random() * mythicArtifacts.length)];
-                text.innerHTML = `${artifact.name} (Mythic)`;
+                text.innerHTML = `${artifact.name} (Mythic) 1.5%`;
                 text.style.color = "red";
                 text.style.fontSize = "32px";
                 lockRolls(1);
